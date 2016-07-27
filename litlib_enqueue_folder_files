@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * This function is ment to be used in WordPress theme
+ * development to enqueue alot of files within folders.
+ * 
+ * @param  string $folder [The folder location without leading or ending slashes - required]
+ * @param  string $prefix [A prefix for naming the enqueued files]
+ * @param  bool $style [If you are enqueueing styles then turn this to one. Its set to 0 (script) - by default]
+ * @return function [wp_enqueue_script or wp_enqueue_style for all the files in the folder]
+ */
+function litlib_enqueue_folder_files($folder, $prefix = '', $style = 0){
+
+	// Declare the $suffix variable
+	$suffix = '';
+
+	// Check if styles are being imported
+	if($style === 1){
+
+		// Set the file suffix to css
+		$suffix === '*.css';
+	}else{
+
+		// Set the file to js
+		$suffix === '*.js';
+	}
+
+	// Create the pattern to look for based on the $folder	
+	$pattern  =	get_stylesheet_directory();
+	$pattern .= '/';
+	$pattern .=	$folder; 
+	$pattern .= '/';
+	$pattern .= '*';
+	$pattern .= $suffix;
+
+	// Retrive all the files using PHP glob() function
+	$files = glob($pattern);
+	
+	// Declare an array variable to store the 
+	// $handle and the $location for the 
+	// wp_enqueue function
+	$script = array();
+
+
+		// Foreach file in the controller folder,
+		// get the name of the file and the uri adress
+		foreach($files as $file){
+
+			// Sets the name we want to use
+			$script[basename($file, $suffix)] = 	
+
+				// Get the URI verson of the location
+				get_stylesheet_directory_uri() . 
+				'/' . $folder . '/' .
+				basename($file);
+		}
+
+
+	// Check weather to use wp_enqueue_style or wp_enqueue_script
+	if($style === 1){
+
+		foreach ($script as $name => $location) {
+			wp_enqueue_style($name . '-' . $prefix, $location);
+		}
+	
+	}else{
+
+		foreach ($script as $name => $location) {
+			wp_enqueue_script($name . '-' . $prefix, $location);
+		}
+
+	}
+}
