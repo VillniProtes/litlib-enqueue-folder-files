@@ -14,6 +14,11 @@ function litlib_enqueue_folder_files($folder, $prefix = '', $style = 0){
 	// Declare the $suffix variable
 	$suffix = '';
 
+	// Check if a $prefix is set
+	if(!$prefix === ''){
+		$prefix = '-' . $prefix;
+	}
+
 	// Check if styles are being imported
 	if($style === 1){
 
@@ -60,13 +65,13 @@ function litlib_enqueue_folder_files($folder, $prefix = '', $style = 0){
 	if($style === 1){
 
 		foreach ($script as $name => $location) {
-			wp_enqueue_style($name . '-' . $prefix, $location);
+			wp_enqueue_style($name . $prefix, $location);
 		}
 	
 	}else{
 
 		foreach ($script as $name => $location) {
-			wp_enqueue_script($name . '-' . $prefix, $location);
+			wp_enqueue_script($name . $prefix, $location);
 		}
 
 	}
